@@ -1,0 +1,27 @@
+name: 打包冬瓜 Windows 版
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: 安装 PyQt6 和打包工具
+        run: pip install PyQt6 pyinstaller
+
+      - name: 打包成 exe
+        run: pyinstaller --onefile --windowed --name donggua --icon donggua.ico --add-data "donggua.png;." dg.py
+
+      - name: 上传 exe
+        uses: actions/upload-artifact@v4
+        with:
+          name: donggua-windows
+          path: dist/donggua.exe
